@@ -2,25 +2,28 @@ using MessagePipe;
 using UnityEngine;
 using VContainer;
 
-class Player : MonoBehaviour
+namespace HelloMessagePipe.Hello2
 {
-    [Inject] private IPublisher<PlayerAttackData> AttackEvent { get; set; }
-
-    [SerializeField] private int hp;
-    [SerializeField] private int atk;
-
-    void Update()
+    class Player : MonoBehaviour
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        [Inject] private IPublisher<PlayerAttackData> AttackEvent { get; set; }
+
+        [SerializeField] private int hp;
+        [SerializeField] private int atk;
+
+        void Update()
         {
-            Debug.Log("Player attack");
-            
-            AttackEvent.Publish(new PlayerAttackData
+            if (Input.GetKeyDown(KeyCode.A))
             {
-                Position = transform.position + transform.forward,
-                Radius = 1.6f,
-                Damage = atk
-            });
+                Debug.Log("Player attack");
+            
+                AttackEvent.Publish(new PlayerAttackData
+                {
+                    Position = transform.position + transform.forward,
+                    Radius = 1.6f,
+                    Damage = atk
+                });
+            }
         }
     }
 }
