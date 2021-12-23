@@ -15,6 +15,11 @@
 /Assets/ARDKExamples/
 /Assets/Resources/ARDK/ArdkAuthConfig.asset
 
+# Paid Assets
+/Assets/UnityAssets/EverydayMotionPack/
+/Assets/UnityAssets/PolygonCity/
+/Assets/UnityAssets/PolygonPrototype/
+
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
 
