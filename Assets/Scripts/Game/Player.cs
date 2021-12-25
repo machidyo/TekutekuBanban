@@ -9,27 +9,23 @@ public class Player : MonoBehaviour
 {
     async void Start()
     {
-        for (var i = 0; i < 10; i++)
+        for (var i = 0; i < 1000; i++)
         {
-            Debug.Log($"{i + 1}回目");
             await MoveForward();
-        }
-
-        for (var i = 0; i < 10; i++)
-        {
-            Debug.Log($"{i + 1}回目");
-            await MoveByPath();
         }
     }
 
     private async UniTask MoveForward()
     {
-        transform.DOLocalMove(transform.position + transform.forward, 4).SetEase(Ease.Linear);
-        await UniTask.Delay(TimeSpan.FromSeconds(4));
-        transform.Rotate(Vector3.up, 90);
+        var speedPerSec = 0.1f;
+        transform.DOLocalMove(transform.position + transform.forward * speedPerSec, speedPerSec).SetEase(Ease.Linear);
+        await UniTask.Delay(TimeSpan.FromSeconds(speedPerSec));
     }
 
-    // 今回に関して言えば、動きの質感的に MoveForward のほうがいい気がした。念のため取っておく。
+    /// <summary>
+    /// for debug
+    /// 今回に関して言えば、動きの質感的に MoveForward のほうがいい気がした。念のため取っておく。
+    /// </summary>
     private async UniTask MoveByPath()
     {
         var poss = new[]
