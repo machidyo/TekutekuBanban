@@ -22,6 +22,15 @@ public class Player : MonoBehaviour
         await UniTask.Delay(TimeSpan.FromSeconds(speedPerSec));
     }
 
+    public bool IsGrounded()
+    {
+        var scaleAdjust = transform.localScale.y;
+        var length = 0.05f * scaleAdjust;
+        var ray = new Ray(transform.position, Vector3.down);
+        // Debug.DrawRay(ray.origin, Vector3.down * length, Color.red, 3);
+        return Physics.Raycast(ray, length);
+    }
+    
     /// <summary>
     /// for debug
     /// 今回に関して言えば、動きの質感的に MoveForward のほうがいい気がした。念のため取っておく。
