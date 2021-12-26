@@ -19,7 +19,7 @@ namespace HelloMessagePipe
         
             // hello 2
             builder.RegisterMessageBroker<PlayerAttackData>(options);
-            builder.RegisterComponentInHierarchy<Hello2.Player>();
+            builder.RegisterComponentInHierarchy<Hello2.Hello2Player>();
             builder.RegisterComponentInHierarchy<Enemy>();
         }
     }

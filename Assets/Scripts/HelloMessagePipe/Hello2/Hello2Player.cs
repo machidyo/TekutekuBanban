@@ -4,7 +4,7 @@ using VContainer;
 
 namespace HelloMessagePipe.Hello2
 {
-    class Player : MonoBehaviour
+    class Hello2Player : MonoBehaviour
     {
         [Inject] private IPublisher<PlayerAttackData> AttackEvent { get; set; }
 
