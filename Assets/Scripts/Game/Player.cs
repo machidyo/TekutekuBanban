@@ -17,11 +17,16 @@ public class Player : MonoBehaviour
 
     public State CurrentState;
     public bool IsGrounded => IsGroundedInternal();
-    
+
+    public float WalkingTime { get; private set; } = 0.0f;
+
+    private Rigidbody rigid;
     private CancellationTokenSource walking;
+    private CancellationTokenSource falling;
     
     void Start()
     {
+        rigid = GetComponent<Rigidbody>();
         CurrentState = State.Standing;
     }
 
@@ -39,6 +44,11 @@ public class Player : MonoBehaviour
                 {
                     CurrentState = State.Falling;
                     walking.Cancel();
+                    Respawn().Forget();
+                }
+                else
+                {
+                    WalkingTime += Time.deltaTime;
                 }
                 break;
             case State.Falling:
@@ -71,6 +81,29 @@ public class Player : MonoBehaviour
         var ray = new Ray(transform.position - transform.forward * 0.5f, Vector3.down);
         Debug.DrawRay(ray.origin, Vector3.down * length, Color.red, 3);
         return Physics.Raycast(ray, length);
+    }
+
+    private async UniTask Respawn()
+    {
+        falling = new CancellationTokenSource();
+        while (!falling.IsCancellationRequested)
+        {
+            if (transform.position.y < -5)
+            {
+                rigid.velocity = Vector3.zero;
+                rigid.useGravity = false;
+                falling.Cancel();
+                await UniTask.DelayFrame(1);
+            }
+            else
+            {
+                await UniTask.Delay(100);
+            }
+        }
+        
+        transform.SetPositionAndRotation(new Vector3(0, 0, -3), Quaternion.identity);
+        rigid.useGravity = true;
+        falling.Dispose();
     }
     
     /// <summary>
