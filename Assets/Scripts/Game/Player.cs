@@ -118,19 +118,15 @@ public class Player : MonoBehaviour
         {
             if (transform.position.y < -5)
             {
-                rigid.velocity = Vector3.zero;
-                rigid.useGravity = false;
                 falling.Cancel();
-                await UniTask.DelayFrame(1);
             }
             else
             {
                 await UniTask.Delay(100);
             }
         }
-        
-        transform.SetPositionAndRotation(new Vector3(0, 0, -3), Quaternion.identity);
-        rigid.useGravity = true;
+
+        SetTappedPoint(new Vector3(0, 0, -3));
         falling.Dispose();
     }
     
