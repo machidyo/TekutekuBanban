@@ -24,7 +24,6 @@ public class Player : MonoBehaviour
     private CancellationTokenSource falling;
 
     private Vector3 tappedPoint;
-    private bool isRespawning;
 
     void Start()
     {
@@ -34,11 +33,6 @@ public class Player : MonoBehaviour
 
     async void Update()
     {
-        if (isRespawning)
-        {
-            CurrentState = State.Spawning;
-        }
-        
         switch (CurrentState)
         {
             case State.Standing:
@@ -102,13 +96,11 @@ public class Player : MonoBehaviour
     public void SetTappedPoint(Vector3 point)
     {
         tappedPoint = point;
-        isRespawning = true;
+        CurrentState = State.Spawning;
     }
 
     private async UniTask RespawnByTap(Vector3 spawnedPoint)
     {
-        isRespawning = false;
-
         rigid.velocity = Vector3.zero;
         rigid.useGravity = false;
         
