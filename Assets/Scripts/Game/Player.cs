@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -13,9 +11,10 @@ public class Player : MonoBehaviour
         Standing,
         Walking,
         Falling,
+        Spawning,
     }
 
-    public State CurrentState;
+    public State CurrentState { get; private set; }
     public bool IsGrounded => IsGroundedInternal();
 
     public float WalkingTime { get; private set; } = 0.0f;
@@ -23,7 +22,10 @@ public class Player : MonoBehaviour
     private Rigidbody rigid;
     private CancellationTokenSource walking;
     private CancellationTokenSource falling;
-    
+
+    private Vector3 tappedPoint;
+    private bool isRespawning;
+
     void Start()
     {
         rigid = GetComponent<Rigidbody>();
@@ -32,11 +34,21 @@ public class Player : MonoBehaviour
 
     async void Update()
     {
+        if (isRespawning)
+        {
+            CurrentState = State.Spawning;
+        }
+        
         switch (CurrentState)
         {
             case State.Standing:
                 CurrentState = State.Walking;
+
+                walking = new CancellationTokenSource();
                 await MoveForward();
+                walking?.Cancel();
+                walking?.Dispose();
+
                 CurrentState = IsGrounded ? State.Standing : State.Falling;
                 break;
             case State.Walking:
@@ -44,7 +56,7 @@ public class Player : MonoBehaviour
                 {
                     CurrentState = State.Falling;
                     walking.Cancel();
-                    Respawn().Forget();
+                    RespawnByFalling().Forget();
                 }
                 else
                 {
@@ -57,6 +69,11 @@ public class Player : MonoBehaviour
                     CurrentState = State.Standing;
                 }
                 break;
+            case State.Spawning:
+                walking.Cancel();
+                await RespawnByTap(tappedPoint);
+                CurrentState = IsGrounded ? State.Standing : State.Falling;
+                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -64,14 +81,13 @@ public class Player : MonoBehaviour
 
     private async UniTask MoveForward()
     {
-        walking = new CancellationTokenSource();
         var speedPerSec = 0.1f;
         var loop = 1 / speedPerSec;
         for (var i = 0; i < loop && !walking.IsCancellationRequested; i++)
         {
             transform.DOLocalMove(transform.position + transform.forward * speedPerSec, speedPerSec).SetEase(Ease.Linear);
-            await UniTask.Delay(TimeSpan.FromSeconds(speedPerSec));
-        }
+            await UniTask.Delay(TimeSpan.FromSeconds(speedPerSec), cancellationToken: walking.Token);
+        } 
     }
 
     private bool IsGroundedInternal()
@@ -83,7 +99,27 @@ public class Player : MonoBehaviour
         return Physics.Raycast(ray, length);
     }
 
-    private async UniTask Respawn()
+    public void SetTappedPoint(Vector3 point)
+    {
+        tappedPoint = point;
+        isRespawning = true;
+    }
+
+    private async UniTask RespawnByTap(Vector3 spawnedPoint)
+    {
+        isRespawning = false;
+
+        rigid.velocity = Vector3.zero;
+        rigid.useGravity = false;
+        
+        await UniTask.DelayFrame(1);
+        
+        var pos = spawnedPoint;
+        transform.SetPositionAndRotation(pos, Quaternion.identity);
+        rigid.useGravity = true;
+    }
+
+    private async UniTask RespawnByFalling()
     {
         falling = new CancellationTokenSource();
         while (!falling.IsCancellationRequested)
