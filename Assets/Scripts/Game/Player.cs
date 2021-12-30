@@ -58,7 +58,7 @@ public class Player : MonoBehaviour
                 {
                     CurrentState = State.Falling;
                     walking.Cancel();
-                    RespawnByFalling().Forget();
+                    // RespawnByFalling().Forget();
                 }
                 else
                 {
@@ -103,6 +103,8 @@ public class Player : MonoBehaviour
 
     public void SetTappedPoint(Vector3 point)
     {
+        if (CurrentState != State.Falling) return;
+        
         tappedPoint = point;
         CurrentState = State.Spawning;
     }
