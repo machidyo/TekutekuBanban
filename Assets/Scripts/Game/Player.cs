@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
 {
     public enum State
     {
+        Idle,
         Standing,
         Walking,
         Falling,
@@ -28,13 +29,20 @@ public class Player : MonoBehaviour
     void Start()
     {
         rigid = GetComponent<Rigidbody>();
-        CurrentState = State.Standing;
+        CurrentState = State.Idle;
     }
 
     async void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            CurrentState = State.Standing;
+        }
+        
         switch (CurrentState)
         {
+            case State.Idle:
+                break;
             case State.Standing:
                 CurrentState = State.Walking;
 
