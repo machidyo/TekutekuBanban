@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class Operation : MonoBehaviour
 {
+    [SerializeField] private GameObject turnArrow;
+    
     private Player player;
 
     void Start()
@@ -19,6 +21,7 @@ public class Operation : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
+                InstantiateTurnArrow().Forget();
             }
             else
             {
@@ -38,6 +41,19 @@ public class Operation : MonoBehaviour
         if (touch.phase == TouchPhase.Ended)
         {
             // CurrentInputAction = InputAction.Tap;
+    
+    private async UniTask InstantiateTurnArrow()
+    {
+        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out var hit, 100))
+        {
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Floor"))
+            {
+                var pos = hit.point + Vector3.up * 0.5f;
+                var y = 90 * Random.Range(0, 12);
+                var rot = Quaternion.Euler(new Vector3(0, y, 0));
+                Instantiate(turnArrow, pos, rot);
+            }
         }
     }
     
