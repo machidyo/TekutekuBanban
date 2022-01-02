@@ -41,6 +41,8 @@ public class Operation : MonoBehaviour
         if (touch.phase == TouchPhase.Ended)
         {
             // CurrentInputAction = InputAction.Tap;
+        }
+    }
     
     private async UniTask InstantiateTurnArrow()
     {
