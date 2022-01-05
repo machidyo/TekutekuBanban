@@ -155,6 +155,7 @@ PlayerSettings:
   applicationIdentifier:
     Android: com.DefaultCompany.TekutekuBanban
     Standalone: com.DefaultCompany.TekutekuBanban
+    iPhone: com.DefaultCompany.TekutekuBanban
   buildNumber:
     Standalone: 0
     iPhone: 0
@@ -445,8 +446,8 @@ PlayerSettings:
   enableInternalProfiler: 0
   logObjCUncaughtExceptions: 1
   enableCrashReportAPI: 0
-  cameraUsageDescription: 
-  locationUsageDescription: 
+  cameraUsageDescription: for AR
+  locationUsageDescription: for AR
   microphoneUsageDescription: 
   bluetoothUsageDescription: 
   switchNMETAOverride: 
