@@ -5,13 +5,14 @@ using UnityEngine;
 
 public class Operation : MonoBehaviour
 {
+    [SerializeField] private GameObject playerGameObject;
     [SerializeField] private GameObject turnArrow;
-    
-    private Player player;
 
+    private GameObject myPlayer;
+    
     void Start()
     {
-        player = FindObjectOfType<Player>();
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
     }
     
     void Update()
@@ -40,7 +41,7 @@ public class Operation : MonoBehaviour
         var touch = Input.GetTouch(0);
         if (touch.phase == TouchPhase.Ended)
         {
-            // CurrentInputAction = InputAction.Tap;
+            Respawn().Forget();
         }
     }
     
@@ -66,10 +67,19 @@ public class Operation : MonoBehaviour
         {
             if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Floor"))
             {
-                // var particle = Instantiate(arPlaneTouch, hit.point, Quaternion.identity);
-                // particle.transform.position += new Vector3(0, 0.01f * avatarAdjuster.MagnificationForInitSize, 0);
-                // particle.transform.localScale *= avatarAdjuster.MagnificationForInitSize;
-                player.SetTappedPoint(hit.point);
+                if (myPlayer == null)
+                {
+                    myPlayer = Instantiate(playerGameObject, hit.point + Vector3.up * 0.1f, Quaternion.identity);
+                    var xz = Vector3.ProjectOnPlane(Camera.main.transform.position, Vector3.up);
+                    myPlayer.transform.LookAt(new Vector3(xz.x, myPlayer.transform.position.y, xz.z));
+                }
+                else
+                {
+                    // var particle = Instantiate(arPlaneTouch, hit.point, Quaternion.identity);
+                    // particle.transform.position += new Vector3(0, 0.01f * avatarAdjuster.MagnificationForInitSize, 0);
+                    // particle.transform.localScale *= avatarAdjuster.MagnificationForInitSize;
+                    myPlayer.GetComponent<Player>().SetTappedPoint(hit.point);
+                }
             }
         }
     }
