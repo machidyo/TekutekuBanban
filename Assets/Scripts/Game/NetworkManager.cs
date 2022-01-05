@@ -37,15 +37,12 @@ public class NetworkManager : MonoBehaviour
         arSession.Run(worldTrackingConfig);
         arSession.Ran += OnSessionRan;
 
-        sessionIdInputField.text = "12345";
-        var sessionId = sessionIdInputField.text;
-        var sessionIdAsByte = Encoding.UTF8.GetBytes(sessionId);
-
-        multipeerNetworking.Join(sessionIdAsByte);
         multipeerNetworking.Connected += OnNetworkedConnected;
 
         arNetworking.PeerStateReceived += OnPeerStateReceived;
         arNetworking.PeerPoseReceived += OnPeerPoseReceived;
+        
+        sessionIdInputField.text = $"{Random.Range(100, 1000)}";
     }
 
     void OnDestroy()
@@ -53,6 +50,13 @@ public class NetworkManager : MonoBehaviour
         arSession?.Dispose();
         multipeerNetworking?.Dispose();
         arNetworking?.Dispose();
+    }
+
+    public void OnJoinButtonClicked()
+    {
+        var sessionId = sessionIdInputField.text;
+        var sessionIdAsByte = Encoding.UTF8.GetBytes(sessionId);
+        multipeerNetworking.Join(sessionIdAsByte);
     }
 
     private void OnSessionRan(ARSessionRanArgs args)
@@ -72,7 +76,7 @@ public class NetworkManager : MonoBehaviour
 
     private void OnPeerPoseReceived(PeerPoseReceivedArgs args)
     {
-        Debug.Log($"START OnPeerPoseReceived: pose: {args.Pose}");
+        // Debug.Log($"START OnPeerPoseReceived: pose: {args.Pose}");
 
         if (!poseIndiicators.ContainsKey(args.Peer))
         {
@@ -81,7 +85,7 @@ public class NetworkManager : MonoBehaviour
 
         if (poseIndiicators.TryGetValue(args.Peer, out var poseIndicator))
         {
-            poseIndicator.transform.position = args.Pose.ToPosition() + new Vector3(0, 0, -0.5f);
+            poseIndicator.transform.position = args.Pose.ToPosition() + new Vector3(0, 0, -0.05f);
         }
     }
 }
