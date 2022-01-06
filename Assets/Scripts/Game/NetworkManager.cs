@@ -7,6 +7,7 @@ using Niantic.ARDK.AR.Configuration;
 using Niantic.ARDK.AR.Networking;
 using Niantic.ARDK.AR.Networking.ARNetworkingEventArgs;
 using Niantic.ARDK.Networking;
+using Niantic.ARDK.Networking.HLAPI.Object.Unity;
 using Niantic.ARDK.Networking.MultipeerNetworkingEventArgs;
 using Niantic.ARDK.Utilities;
 using Niantic.ARDK.Utilities.BinarySerialization;
@@ -18,6 +19,7 @@ public class NetworkManager : MonoBehaviour
     [SerializeField] private TMP_InputField sessionIdInputField;
 
     [SerializeField] private GameObject peerPoseIndicator;
+    [SerializeField] private NetworkedUnityObject networkedUnityObject;
     
     private IARNetworking arNetworking;
     private IMultipeerNetworking multipeerNetworking;
@@ -93,6 +95,15 @@ public class NetworkManager : MonoBehaviour
     private void OnPeerStateReceived(PeerStateReceivedArgs args)
     {
         Debug.Log($"START OnPeerStateReceived: state: {args.State}");
+
+        if (args.Peer.Identifier == multipeerNetworking.Host.Identifier)
+        {
+            networkedUnityObject.NetworkSpawn();
+        }
+        else
+        {
+            Debug.Log("ノーホスト");
+        }
     }
 
     private void OnPeerPoseReceived(PeerPoseReceivedArgs args)
