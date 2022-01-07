@@ -2716,9 +2716,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1203418674360497887}
   - component: {fileID: 1203418674367640755}
-  - component: {fileID: -2500612780241521992}
   - component: {fileID: -4306908723323632096}
   - component: {fileID: -3374747456130864651}
+  - component: {fileID: -3048134582687190116}
   m_Layer: 0
   m_Name: BusinessMan_Suit_01
   m_TagString: Untagged
@@ -2769,18 +2769,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &-2500612780241521992
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1203418674360416045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca3a770816cbb3143b628cd9f48fc16f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &-4306908723323632096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2815,3 +2803,15 @@ MonoBehaviour:
   _auth: {fileID: -4306908723323632096}
   _defaultBehaviour: {fileID: 0}
   _behaviours: []
+--- !u!114 &-3048134582687190116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203418674360416045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84d0e7404fd064e6bbb143cff95019b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

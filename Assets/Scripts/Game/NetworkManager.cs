@@ -98,7 +98,12 @@ public class NetworkManager : MonoBehaviour
 
         if (args.Peer.Identifier == multipeerNetworking.Host.Identifier)
         {
-            networkedUnityObject.NetworkSpawn();
+            Debug.Log("ホストです");
+            if (args.State == PeerState.Stable)
+            {
+                Debug.Log("生成します");
+                networkedUnityObject.NetworkSpawn();
+            }
         }
         else
         {
