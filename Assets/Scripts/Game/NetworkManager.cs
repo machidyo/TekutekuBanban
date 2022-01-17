@@ -27,6 +27,8 @@ public class NetworkManager : MonoBehaviour
 
     private Dictionary<IPeer, GameObject> poseIndiicators = new Dictionary<IPeer, GameObject>();
     
+    public bool IsHost { get; private set; }
+    
     void Start()
     {
         arNetworking = ARNetworkingFactory.Create();
@@ -90,33 +92,24 @@ public class NetworkManager : MonoBehaviour
     private void OnNetworkedConnected(ConnectedArgs args)
     {
         Debug.Log($"START OnNetworkedConnected: peerID {args.Self}, isHost: {args.IsHost}");
+        IsHost = args.IsHost;
     }
 
     private void OnPeerStateReceived(PeerStateReceivedArgs args)
     {
         Debug.Log($"START OnPeerStateReceived: state: {args.State}");
-
-        if (args.Peer.Identifier == multipeerNetworking.Host.Identifier)
-        {
-            Debug.Log("ホストです");
-            if (args.State == PeerState.Stable)
-            {
-                Debug.Log("生成します");
-                networkedUnityObject.NetworkSpawn();
-            }
-        }
-        else
-        {
-            Debug.Log("ノーホスト");
-        }
     }
 
     private void OnPeerPoseReceived(PeerPoseReceivedArgs args)
     {
         // Debug.Log($"START OnPeerPoseReceived: pose: {args.Pose}");
 
+        if (IsHost) return;
+        if (args.Peer.Identifier != multipeerNetworking.Host.Identifier) return;
+        
         if (!poseIndiicators.ContainsKey(args.Peer))
         {
+            Debug.Log("Instantiate Apple");
             poseIndiicators.Add(args.Peer, Instantiate(peerPoseIndicator));
         }
 
