@@ -2023,7 +2023,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sessionIdInputField: {fileID: 465108408}
-  peerPoseIndicator: {fileID: 3529634409336799952, guid: e7542fa1e4ee34db0accd626e9632e6b, type: 3}
+  peerPoseIndicator: {fileID: 4487421213843527980, guid: 4ec1f337b57d64452bde031afad022c3, type: 3}
   networkedUnityObject: {fileID: -5332219966134610964, guid: 32d7c8858a87446dfab4b8b8d124237b, type: 3}
 --- !u!4 &1248414621
 Transform:
@@ -2681,6 +2681,10 @@ PrefabInstance:
     - target: {fileID: 4121737292843690, guid: 924a7268bfe9947e095cce9a99ed0458, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 20333895847132536, guid: 924a7268bfe9947e095cce9a99ed0458, type: 3}
+      propertyPath: m_RenderingPath
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 924a7268bfe9947e095cce9a99ed0458, type: 3}
