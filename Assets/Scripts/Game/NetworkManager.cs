@@ -75,7 +75,8 @@ public class NetworkManager : MonoBehaviour
         else
         {
             using var stream = new MemoryStream();
-            GlobalSerializer.Serialize(stream, "question");
+            var index = int.Parse(sessionIdInputField.text);
+            GlobalSerializer.Serialize(stream, index);
             multipeerNetworking.SendDataToPeers(1, stream.ToArray(), multipeerNetworking.OtherPeers, TransportType.UnreliableOrdered);
         }
     }
@@ -104,6 +105,7 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
+    private GameObject temp;
     private void OnPeerDataReceived(PeerDataReceivedArgs args)
     {
         if (args.Tag == 0)
@@ -116,13 +118,21 @@ public class NetworkManager : MonoBehaviour
         if (args.Tag == 1)
         {
             using var stream = new MemoryStream(args.CopyData());
-            var str = (string)GlobalSerializer.Deserialize(stream);
-            Debug.Log(str);
+            var index = (int)GlobalSerializer.Deserialize(stream);
+            Debug.Log($"index = {index}");
 
-            var marker = FindObjectOfType<Operation>().Marker;
-            Instantiate(questions[0], marker.transform.position, Quaternion.identity);
-            
-            marker.SetActive(false);
+            if (temp == null)
+            {
+                var marker = FindObjectOfType<Operation>().Marker;
+                temp = Instantiate(questions[index], marker.transform.position, Quaternion.identity);
+                marker.SetActive(false);
+            }
+            else
+            {
+                var pos = temp.transform.position;
+                Destroy(temp);
+                temp = Instantiate(questions[index], pos, Quaternion.identity);
+            }
         }
     }
 
