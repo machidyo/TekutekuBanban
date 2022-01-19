@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class Operation : MonoBehaviour
 {
-    [SerializeField] private GameObject playerGameObject;
-    [SerializeField] private GameObject turnArrow;
+    [SerializeField] private NetworkManager networkManager;
+    [SerializeField] private GameObject markerGameObject;
 
-    private GameObject myPlayer;
+    public GameObject Marker { get; private set; }
     
     void Start()
     {
@@ -22,11 +22,11 @@ public class Operation : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                InstantiateTurnArrow().Forget();
+                SetMarker();
             }
             else
             {
-                Respawn().Forget();
+                SetMarker();
             }
         }
 #elif UNITY_IOS || UNITY_ANDROID
@@ -41,46 +41,35 @@ public class Operation : MonoBehaviour
         var touch = Input.GetTouch(0);
         if (touch.phase == TouchPhase.Ended)
         {
-            Respawn().Forget();
+            SetMarker();
         }
     }
-    
-    private async UniTask InstantiateTurnArrow()
+
+    private void SetMarker()
     {
+        Debug.Log($"START SetMarker (true, false) {networkManager.IsHost}, {networkManager.IsStart}");
+        if (!networkManager.IsHost) return;
+        if (networkManager.IsStart) return;
+        
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out var hit, 100))
         {
+            Debug.Log($"hit.collider.gameObject.layer = {hit.collider.gameObject.layer}");
             if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Floor"))
             {
-                var pos = hit.point + Vector3.up * 0.5f;
-                var y = 90 * Random.Range(0, 12);
-                var rot = Quaternion.Euler(new Vector3(0, y, 0));
-                Instantiate(turnArrow, pos, rot);
-            }
-        }
-    }
-    
-    private async UniTask Respawn()
-    {
-        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out var hit, 100))
-        {
-            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Floor"))
-            {
-                if (myPlayer == null)
+                var pos = hit.point + Vector3.up * 0.1f;
+                Debug.Log($"pos = {pos}, Marker is null = {Marker == null}");
+                if (Marker == null)
                 {
-                    myPlayer = Instantiate(playerGameObject, hit.point + Vector3.up * 0.1f, Quaternion.identity);
-                    var xz = Vector3.ProjectOnPlane(Camera.main.transform.position, Vector3.up);
-                    myPlayer.transform.LookAt(new Vector3(xz.x, myPlayer.transform.position.y, xz.z));
+                    Marker = Instantiate(markerGameObject, pos, Quaternion.identity);
                 }
                 else
                 {
                     // var particle = Instantiate(arPlaneTouch, hit.point, Quaternion.identity);
                     // particle.transform.position += new Vector3(0, 0.01f * avatarAdjuster.MagnificationForInitSize, 0);
                     // particle.transform.localScale *= avatarAdjuster.MagnificationForInitSize;
-                    myPlayer.GetComponent<Player>().SetTappedPoint(hit.point);
+                    Marker.transform.position = pos;
                 }
             }
         }
-    }
-}
+    }}

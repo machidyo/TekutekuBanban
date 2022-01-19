@@ -16,19 +16,16 @@ using UnityEngine;
 
 public class NetworkManager : MonoBehaviour
 {
+    [SerializeField] private List<GameObject> questions;
     [SerializeField] private TMP_InputField sessionIdInputField;
 
-    [SerializeField] private GameObject peerPoseIndicator;
-    
+    public bool IsHost { get; private set; }
+    public bool IsStart { get; private set; }
+
     private IARNetworking arNetworking;
     private IMultipeerNetworking multipeerNetworking;
     private IARSession arSession;
 
-    private Dictionary<IPeer, GameObject> poseIndiicators = new Dictionary<IPeer, GameObject>();
-    
-    public bool IsHost { get; private set; }
-    private bool isStart = false;
-    
     void Start()
     {
         arNetworking = ARNetworkingFactory.Create();
@@ -69,6 +66,22 @@ public class NetworkManager : MonoBehaviour
 
     public void OnSendDataToPeersButtonClicked()
     {
+        // SendMojimojikun();
+        if (IsHost)
+        {
+            IsStart = true;
+            Debug.Log("IsStart is true");
+        }
+        else
+        {
+            using var stream = new MemoryStream();
+            GlobalSerializer.Serialize(stream, "question");
+            multipeerNetworking.SendDataToPeers(1, stream.ToArray(), multipeerNetworking.OtherPeers, TransportType.UnreliableOrdered);
+        }
+    }
+
+    private void SendMojimojikun()
+    {
         using var stream = new MemoryStream();
         GlobalSerializer.Serialize(stream, "mojimojikun");
         multipeerNetworking.SendDataToPeers(0, stream.ToArray(), multipeerNetworking.OtherPeers, TransportType.UnreliableOrdered);
@@ -89,11 +102,6 @@ public class NetworkManager : MonoBehaviour
             var arMesh = FindObjectOfType<ARMeshManager>();
             arMesh.UseInvisibleMaterial = false;
         }
-
-        if (hoge == 10)
-        {
-            isStart = true;
-        }
     }
 
     private void OnPeerDataReceived(PeerDataReceivedArgs args)
@@ -103,6 +111,18 @@ public class NetworkManager : MonoBehaviour
             using var stream = new MemoryStream(args.CopyData());
             var str = (string)GlobalSerializer.Deserialize(stream);
             Debug.Log(str);
+        }
+        
+        if (args.Tag == 1)
+        {
+            using var stream = new MemoryStream(args.CopyData());
+            var str = (string)GlobalSerializer.Deserialize(stream);
+            Debug.Log(str);
+
+            var marker = FindObjectOfType<Operation>().Marker;
+            Instantiate(questions[0], marker.transform.position, Quaternion.identity);
+            
+            marker.SetActive(false);
         }
     }
 
@@ -124,21 +144,19 @@ public class NetworkManager : MonoBehaviour
 
     private void OnPeerPoseReceived(PeerPoseReceivedArgs args)
     {
-        // Debug.Log($"START OnPeerPoseReceived: pose: {args.Pose}");
-
-        if (!IsHost) return;
-        if (args.Peer.Identifier == multipeerNetworking.Host.Identifier) return;
-        if (!isStart) return;
+        // 抑制中
+        return;
         
-        if (!poseIndiicators.ContainsKey(args.Peer))
-        {
-            Debug.Log("Instantiate Apple");
-            poseIndiicators.Add(args.Peer, Instantiate(peerPoseIndicator));
-        }
-
-        if (poseIndiicators.TryGetValue(args.Peer, out var poseIndicator))
-        {
-            poseIndicator.transform.position = args.Pose.ToPosition() + new Vector3(0, 0, -0.05f);
-        }
+        // Debug.Log($"START OnPeerPoseReceived: pose: {args.Pose}");
+        // if (!poseIndiicators.ContainsKey(args.Peer))
+        // {
+        //     Debug.Log("Instantiate Apple");
+        //     poseIndiicators.Add(args.Peer, Instantiate(peerPoseIndicator));
+        // }
+        //
+        // if (poseIndiicators.TryGetValue(args.Peer, out var poseIndicator))
+        // {
+        //     poseIndicator.transform.position = args.Pose.ToPosition() + new Vector3(0, 0, -0.05f);
+        // }
     }
 }

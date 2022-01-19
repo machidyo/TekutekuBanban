@@ -853,8 +853,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813677911b0d00041804efb03c2c26dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerGameObject: {fileID: 4835230304811823310, guid: 8d1ed30d3e2117e47b62424b87f73d85, type: 3}
-  turnArrow: {fileID: 7154824455410124358, guid: 1d635ec896ea71944a9e967bb7f71f3d, type: 3}
+  networkManager: {fileID: 1248414620}
+  markerGameObject: {fileID: 5814418261468121526, guid: ce568c168a62d4295937a124bf43f814, type: 3}
 --- !u!4 &380168705
 Transform:
   m_ObjectHideFlags: 0
@@ -2022,9 +2022,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e08933f1a6d1f4b449bfc21daed7c9c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  questions:
+  - {fileID: 4487421213843527980, guid: 4ec1f337b57d64452bde031afad022c3, type: 3}
   sessionIdInputField: {fileID: 465108408}
-  peerPoseIndicator: {fileID: 4487421213843527980, guid: 4ec1f337b57d64452bde031afad022c3, type: 3}
-  networkedUnityObject: {fileID: -5332219966134610964, guid: 32d7c8858a87446dfab4b8b8d124237b, type: 3}
 --- !u!4 &1248414621
 Transform:
   m_ObjectHideFlags: 0
@@ -2681,10 +2681,6 @@ PrefabInstance:
     - target: {fileID: 4121737292843690, guid: 924a7268bfe9947e095cce9a99ed0458, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 20333895847132536, guid: 924a7268bfe9947e095cce9a99ed0458, type: 3}
-      propertyPath: m_RenderingPath
-      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 924a7268bfe9947e095cce9a99ed0458, type: 3}
