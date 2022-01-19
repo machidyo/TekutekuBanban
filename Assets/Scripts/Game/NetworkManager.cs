@@ -124,6 +124,7 @@ public class NetworkManager : MonoBehaviour
             using var stream = new MemoryStream(args.CopyData());
             var str = (string)GlobalSerializer.Deserialize(stream);
             CanStart = true;
+            OnSwitchMeshButtonClicked();
             Debug.Log(str);
         }
 
