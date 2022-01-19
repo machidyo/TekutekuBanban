@@ -6,8 +6,8 @@ using Niantic.ARDK.AR.ARSessionEventArgs;
 using Niantic.ARDK.AR.Configuration;
 using Niantic.ARDK.AR.Networking;
 using Niantic.ARDK.AR.Networking.ARNetworkingEventArgs;
+using Niantic.ARDK.Extensions.Meshing;
 using Niantic.ARDK.Networking;
-using Niantic.ARDK.Networking.HLAPI.Object.Unity;
 using Niantic.ARDK.Networking.MultipeerNetworkingEventArgs;
 using Niantic.ARDK.Utilities;
 using Niantic.ARDK.Utilities.BinarySerialization;
@@ -19,7 +19,6 @@ public class NetworkManager : MonoBehaviour
     [SerializeField] private TMP_InputField sessionIdInputField;
 
     [SerializeField] private GameObject peerPoseIndicator;
-    [SerializeField] private NetworkedUnityObject networkedUnityObject;
     
     private IARNetworking arNetworking;
     private IMultipeerNetworking multipeerNetworking;
@@ -28,6 +27,7 @@ public class NetworkManager : MonoBehaviour
     private Dictionary<IPeer, GameObject> poseIndiicators = new Dictionary<IPeer, GameObject>();
     
     public bool IsHost { get; private set; }
+    private bool isStart = false;
     
     void Start()
     {
@@ -74,6 +74,28 @@ public class NetworkManager : MonoBehaviour
         multipeerNetworking.SendDataToPeers(0, stream.ToArray(), multipeerNetworking.OtherPeers, TransportType.UnreliableOrdered);
     }
 
+    public void OnStartGameButtonClicked()
+    {
+        Debug.Log($"OnStartGameButtonClicked, {sessionIdInputField.text}");
+        
+        var hoge = int.Parse(sessionIdInputField.text);
+        if (hoge == 0)
+        {
+            var arMesh = FindObjectOfType<ARMeshManager>();
+            arMesh.UseInvisibleMaterial = true;
+        }
+        if (hoge == 1)
+        {
+            var arMesh = FindObjectOfType<ARMeshManager>();
+            arMesh.UseInvisibleMaterial = false;
+        }
+
+        if (hoge == 10)
+        {
+            isStart = true;
+        }
+    }
+
     private void OnPeerDataReceived(PeerDataReceivedArgs args)
     {
         if (args.Tag == 0)
@@ -104,8 +126,9 @@ public class NetworkManager : MonoBehaviour
     {
         // Debug.Log($"START OnPeerPoseReceived: pose: {args.Pose}");
 
-        if (IsHost) return;
-        if (args.Peer.Identifier != multipeerNetworking.Host.Identifier) return;
+        if (!IsHost) return;
+        if (args.Peer.Identifier == multipeerNetworking.Host.Identifier) return;
+        if (!isStart) return;
         
         if (!poseIndiicators.ContainsKey(args.Peer))
         {
