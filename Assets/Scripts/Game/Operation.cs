@@ -47,9 +47,9 @@ public class Operation : MonoBehaviour
 
     private void SetMarker()
     {
-        Debug.Log($"START SetMarker (true, false) {networkManager.IsHost}, {networkManager.IsStart}");
+        Debug.Log($"START SetMarker (true, false) {networkManager.IsHost}, {networkManager.CanStart}");
         if (!networkManager.IsHost) return;
-        if (networkManager.IsStart) return;
+        if (networkManager.CanStart) return;
         
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out var hit, 100))

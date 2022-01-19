@@ -9,7 +9,6 @@ using Niantic.ARDK.AR.Networking.ARNetworkingEventArgs;
 using Niantic.ARDK.Extensions.Meshing;
 using Niantic.ARDK.Networking;
 using Niantic.ARDK.Networking.MultipeerNetworkingEventArgs;
-using Niantic.ARDK.Utilities;
 using Niantic.ARDK.Utilities.BinarySerialization;
 using TMPro;
 using UnityEngine;
@@ -17,10 +16,14 @@ using UnityEngine;
 public class NetworkManager : MonoBehaviour
 {
     [SerializeField] private List<GameObject> questions;
+    
+    [Header("UI")]
+    [SerializeField] private GameObject questionPanel;
+    [SerializeField] private GameObject statePanel;
     [SerializeField] private TMP_InputField sessionIdInputField;
 
     public bool IsHost { get; private set; }
-    public bool IsStart { get; private set; }
+    public bool CanStart { get; private set; }
 
     private IARNetworking arNetworking;
     private IMultipeerNetworking multipeerNetworking;
@@ -64,47 +67,48 @@ public class NetworkManager : MonoBehaviour
         multipeerNetworking.Join(sessionIdAsByte);
     }
 
-    public void OnSendDataToPeersButtonClicked()
+    private bool isVisibleMesh = true;
+    public void OnSwitchMeshButtonClicked()
     {
-        // SendMojimojikun();
+        isVisibleMesh = !isVisibleMesh;
+
+        var arMesh = FindObjectOfType<ARMeshManager>();
+        arMesh.UseInvisibleMaterial = isVisibleMesh;
+    }
+
+    public void OnQuestionButtonClicked(int index)
+    {
         if (IsHost)
         {
-            IsStart = true;
-            Debug.Log("IsStart is true");
+            Ping(index);
         }
         else
         {
-            using var stream = new MemoryStream();
-            var index = int.Parse(sessionIdInputField.text);
-            GlobalSerializer.Serialize(stream, index);
-            multipeerNetworking.SendDataToPeers(1, stream.ToArray(), multipeerNetworking.OtherPeers, TransportType.UnreliableOrdered);
+            Question(index);
         }
     }
 
-    private void SendMojimojikun()
+    private void Ping(int index)
     {
         using var stream = new MemoryStream();
-        GlobalSerializer.Serialize(stream, "mojimojikun");
+        GlobalSerializer.Serialize(stream, $"Ping {index}");
         multipeerNetworking.SendDataToPeers(0, stream.ToArray(), multipeerNetworking.OtherPeers, TransportType.UnreliableOrdered);
     }
 
-    public void OnStartGameButtonClicked()
+    private void Question(int index)
     {
-        Debug.Log($"OnStartGameButtonClicked, {sessionIdInputField.text}");
-        
-        var hoge = int.Parse(sessionIdInputField.text);
-        if (hoge == 0)
-        {
-            var arMesh = FindObjectOfType<ARMeshManager>();
-            arMesh.UseInvisibleMaterial = true;
-        }
-        if (hoge == 1)
-        {
-            var arMesh = FindObjectOfType<ARMeshManager>();
-            arMesh.UseInvisibleMaterial = false;
-        }
+        using var stream = new MemoryStream();
+        GlobalSerializer.Serialize(stream, index);
+        multipeerNetworking.SendDataToPeers(2, stream.ToArray(), multipeerNetworking.OtherPeers, TransportType.UnreliableOrdered);
     }
 
+    public void OnFixButtonClicked()
+    {
+        using var stream = new MemoryStream();
+        GlobalSerializer.Serialize(stream, "CanStart");
+        multipeerNetworking.SendDataToPeers(1, stream.ToArray(), multipeerNetworking.OtherPeers, TransportType.UnreliableOrdered);
+    }
+    
     private GameObject temp;
     private void OnPeerDataReceived(PeerDataReceivedArgs args)
     {
@@ -114,8 +118,16 @@ public class NetworkManager : MonoBehaviour
             var str = (string)GlobalSerializer.Deserialize(stream);
             Debug.Log(str);
         }
-        
+
         if (args.Tag == 1)
+        {
+            using var stream = new MemoryStream(args.CopyData());
+            var str = (string)GlobalSerializer.Deserialize(stream);
+            CanStart = true;
+            Debug.Log(str);
+        }
+
+        if (args.Tag == 2)
         {
             using var stream = new MemoryStream(args.CopyData());
             var index = (int)GlobalSerializer.Deserialize(stream);
@@ -145,6 +157,9 @@ public class NetworkManager : MonoBehaviour
     {
         Debug.Log($"START OnNetworkedConnected: peerID {args.Self}, isHost: {args.IsHost}");
         IsHost = args.IsHost;
+
+        questionPanel.SetActive(!IsHost);
+        statePanel.SetActive(!IsHost);
     }
 
     private void OnPeerStateReceived(PeerStateReceivedArgs args)
