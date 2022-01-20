@@ -170,19 +170,6 @@ public class NetworkManager : MonoBehaviour
 
     private void OnPeerPoseReceived(PeerPoseReceivedArgs args)
     {
-        // 抑制中
-        return;
-        
         // Debug.Log($"START OnPeerPoseReceived: pose: {args.Pose}");
-        // if (!poseIndiicators.ContainsKey(args.Peer))
-        // {
-        //     Debug.Log("Instantiate Apple");
-        //     poseIndiicators.Add(args.Peer, Instantiate(peerPoseIndicator));
-        // }
-        //
-        // if (poseIndiicators.TryGetValue(args.Peer, out var poseIndicator))
-        // {
-        //     poseIndicator.transform.position = args.Pose.ToPosition() + new Vector3(0, 0, -0.05f);
-        // }
     }
 }
