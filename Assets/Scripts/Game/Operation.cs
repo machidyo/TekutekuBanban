@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class Operation : MonoBehaviour
@@ -20,14 +17,7 @@ public class Operation : MonoBehaviour
 #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0))
         {
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                SetMarker();
-            }
-            else
-            {
-                SetMarker();
-            }
+            SetMarker();
         }
 #elif UNITY_IOS || UNITY_ANDROID
         UpdateIfMobile();
@@ -65,9 +55,6 @@ public class Operation : MonoBehaviour
                 }
                 else
                 {
-                    // var particle = Instantiate(arPlaneTouch, hit.point, Quaternion.identity);
-                    // particle.transform.position += new Vector3(0, 0.01f * avatarAdjuster.MagnificationForInitSize, 0);
-                    // particle.transform.localScale *= avatarAdjuster.MagnificationForInitSize;
                     Marker.transform.position = pos;
                 }
             }
