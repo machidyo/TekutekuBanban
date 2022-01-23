@@ -2,10 +2,8 @@ using UnityEngine;
 
 public class Operation : MonoBehaviour
 {
+    [SerializeField] private GameMaster gameMaster;
     [SerializeField] private NetworkManager networkManager;
-    [SerializeField] private GameObject markerGameObject;
-
-    public GameObject Marker { get; private set; }
     
     void Start()
     {
@@ -17,7 +15,7 @@ public class Operation : MonoBehaviour
 #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0))
         {
-            SetMarker();
+            gameMaster.SetMarker();
         }
 #elif UNITY_IOS || UNITY_ANDROID
         UpdateIfMobile();
@@ -31,29 +29,7 @@ public class Operation : MonoBehaviour
         var touch = Input.GetTouch(0);
         if (touch.phase == TouchPhase.Ended)
         {
-            SetMarker();
+            gameMaster.SetMarker();
         }
     }
-
-    private void SetMarker()
-    {
-        if (!networkManager.IsHost) return;
-        if (networkManager.CanStart) return;
-        
-        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out var hit, 100))
-        {
-            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Floor"))
-            {
-                var pos = hit.point + Vector3.up * 0.1f;
-                if (Marker == null)
-                {
-                    Marker = Instantiate(markerGameObject, pos, Quaternion.identity);
-                }
-                else
-                {
-                    Marker.transform.position = pos;
-                }
-            }
-        }
-    }}
+}
