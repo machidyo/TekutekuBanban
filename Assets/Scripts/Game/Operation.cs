@@ -3,7 +3,6 @@ using UnityEngine;
 public class Operation : MonoBehaviour
 {
     [SerializeField] private GameMaster gameMaster;
-    [SerializeField] private NetworkManager networkManager;
     
     void Start()
     {
