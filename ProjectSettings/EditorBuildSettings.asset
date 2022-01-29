@@ -11,7 +11,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/ARDKExamples/PlaneAnchors/PlaneAnchors.unity
     guid: bfba5cea385a241f3af07584baef9462
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Play.unity
     guid: 2e8e595ef0122b54eba7bbbc766a2b8b
+  - enabled: 1
+    path: Assets/Scenes/HelloVContainer.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}
