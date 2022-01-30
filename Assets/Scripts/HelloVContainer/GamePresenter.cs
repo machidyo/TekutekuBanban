@@ -1,3 +1,4 @@
+using VContainer;
 using VContainer.Unity;
 
 public class GamePresenter : IStartable
@@ -5,6 +6,7 @@ public class GamePresenter : IStartable
     private readonly HelloWorldService helloWorldService;
     private readonly HelloScreen helloScreen;
 
+    [Inject]
     public GamePresenter(HelloWorldService helloWorldService, HelloScreen helloScreen)
     {
         this.helloWorldService = helloWorldService;
