@@ -9,3 +9,7 @@
 ## 注意
 * ARDK v1.1.0、および利用するためのキーは https://lightship.dev/account/downloads から取得する必要があります
 * 本リポジトリに有償Assetは含まれていません
+
+## Used libraries
+* [UniTask](https://github.com/Cysharp/UniTask) : The MIT License (MIT)
+* [VContainer](https://github.com/hadashiA/VContainer) : The MIT License (MIT) 
