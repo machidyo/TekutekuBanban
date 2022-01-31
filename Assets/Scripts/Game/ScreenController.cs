@@ -1,5 +1,4 @@
 using Niantic.ARDK.Extensions.Meshing;
-using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
@@ -12,7 +11,6 @@ public class ScreenController : IStartable
     [Inject]
     public ScreenController(ScreenViewer sv, ARMeshManager arm, NetworkManager nm)
     {
-        Debug.Log("START Inject in ScreenController");
         screenViewer = sv;
         arMeshManager = arm;
         networkManager = nm;
@@ -20,7 +18,6 @@ public class ScreenController : IStartable
 
     public void Start()
     {
-        Debug.Log("START Start in ScreenController");
         screenViewer.JoinButton.onClick.AddListener(OnJoinButtonClicked);
         screenViewer.FixButton.onClick.AddListener(OnFixButtonClicked);
         screenViewer.SwitchButton.onClick.AddListener(OnSwitchMeshButtonClicked);
@@ -46,7 +43,6 @@ public class ScreenController : IStartable
 
     private void OnJoinButtonClicked()
     {
-        Debug.Log("START OnJoinButtonClicked");
         var sessionId = screenViewer.SessionId;
         networkManager.Join(sessionId);
     }

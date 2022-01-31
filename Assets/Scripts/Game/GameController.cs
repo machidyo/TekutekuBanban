@@ -23,7 +23,6 @@ public class GameController : IStartable
 
     public void Start()
     {
-        Debug.Log("START Start in GameController");
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
         operation.OnTouch.AddListener(SetMarker);
@@ -67,7 +66,6 @@ public class GameController : IStartable
     
     private void OnNetworkedConnected()
     {
-        Debug.Log("START OnNetworkedConnected in GameController");
         // ARMesh がなんらかの不具合で共有できないことから、ホストが回答者で、参加者が質問者という歪な形をとっている
         var isAdmin = !networkManager.IsHost;
         screenViewer.ShowAdminUI(isAdmin);

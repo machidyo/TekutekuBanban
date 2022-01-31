@@ -85,7 +85,7 @@ public class NetworkManager : MonoBehaviour
 
     private void OnSessionRan(ARSessionRanArgs args)
     {
-        Debug.Log("START OnSessionRan");
+        // Debug.Log("START OnSessionRan");
     }
 
     private void OnNetworkedConnected(ConnectedArgs args)
