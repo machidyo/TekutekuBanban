@@ -1,0 +1,16 @@
+# WhatsInsideTheBox
+![WhatsInsideTheBox](https://user-images.githubusercontent.com/1772636/150895337-a2031251-50d1-4324-8faf-9c806f0c8c21.gif)
+
+## 前提
+* Windows10 or M1 Mac
+* Unity 2020.3.22f1
+* ARDK v1.1.0
+* iOS or Android
+
+## 注意
+* ARDK v1.1.0、および利用するためのキーは https://lightship.dev/account/downloads から取得する必要があります
+* 本リポジトリに有償Assetは含まれていません
+
+## Used libraries
+* [UniTask](https://github.com/Cysharp/UniTask) : The MIT License (MIT)
+* [VContainer](https://github.com/hadashiA/VContainer) : The MIT License (MIT) 
