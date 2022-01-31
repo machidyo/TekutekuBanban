@@ -1,53 +1,35 @@
-using Niantic.ARDK.Extensions.Meshing;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ScreenViewer : MonoBehaviour
 {
-    [SerializeField] private ARMeshManager arMeshManager;
-    [SerializeField] private NetworkManager networkManager;
-
     [Header("UI")]
     [SerializeField] private GameObject questionPanel;
     [SerializeField] private GameObject statePanel;
     [SerializeField] private TMP_InputField sessionIdInputField;
 
-    void Start()
+    [Header("Button")]
+    [SerializeField] private Button joinButton;
+    [SerializeField] private Button fixButton;
+    [SerializeField] private Button switchButton;
+    [SerializeField] private List<Button> questionButtons;
+    
+    public string SessionId => sessionIdInputField.text;
+    public Button JoinButton => joinButton;
+    public Button FixButton => fixButton;
+    public Button SwitchButton => switchButton;
+    public List<Button> QuestionButtons => questionButtons;
+
+    public void Start()
     {
         sessionIdInputField.text = $"{Random.Range(100, 1000)}";
     }
 
-    public void OnJoinButtonClicked()
+    public void ShowAdminUI(bool isActive)
     {
-        var sessionId = sessionIdInputField.text;
-        networkManager.Join(sessionId);
-    }
-    
-    public void OnFixButtonClicked()
-    {
-        networkManager.Fix();
-    }
-
-    public void OnSwitchMeshButtonClicked()
-    {
-        arMeshManager.UseInvisibleMaterial = !arMeshManager.UseInvisibleMaterial;
-    }
-
-    public void OnQuestionButtonClicked(int index)
-    {
-        if (networkManager.IsHost)
-        {
-            networkManager.Ping(index);
-        }
-        else
-        {
-            networkManager.Question(index);
-        }
-    }
-
-    public void ShowAdminUI()
-    {
-        questionPanel.SetActive(true);
-        statePanel.SetActive(true);
+        questionPanel.SetActive(isActive);
+        statePanel.SetActive(isActive);
     }
 }

@@ -1,20 +1,16 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Operation : MonoBehaviour
 {
-    [SerializeField] private GameMaster gameMaster;
-    
-    void Start()
-    {
-        Screen.sleepTimeout = SleepTimeout.NeverSleep;
-    }
+    public readonly UnityEvent OnTouch = new UnityEvent();
     
     void Update()
     {
 #if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0))
         {
-            gameMaster.SetMarker();
+            OnTouch.Invoke();
         }
 #elif UNITY_IOS || UNITY_ANDROID
         UpdateIfMobile();
@@ -28,7 +24,7 @@ public class Operation : MonoBehaviour
         var touch = Input.GetTouch(0);
         if (touch.phase == TouchPhase.Ended)
         {
-            gameMaster.SetMarker();
+            OnTouch.Invoke();
         }
     }
 }

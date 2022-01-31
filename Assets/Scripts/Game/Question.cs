@@ -1,21 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameMaster : MonoBehaviour
+public class Question : MonoBehaviour
 {
-    [SerializeField] private NetworkManager networkManager;
-
     [SerializeField] private GameObject markerGameObject;
     [SerializeField] private List<GameObject> questions;
 
     private GameObject marker;
-    private bool canStart;
+    private bool hasFixedMarker;
     private GameObject question;
 
     public void SetMarker()
     {
-        if (!networkManager.IsHost) return;
-        if (canStart) return;
+        if (hasFixedMarker) return;
         
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out var hit, 100))
@@ -35,9 +32,9 @@ public class GameMaster : MonoBehaviour
         }
     }
 
-    public void ReadyToStart()
+    public void FixMarker()
     {
-        canStart = true;
+        hasFixedMarker = true;
     }
 
     public void SetQuestion(int index)

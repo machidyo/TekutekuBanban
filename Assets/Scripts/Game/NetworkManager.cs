@@ -9,13 +9,14 @@ using Niantic.ARDK.Networking;
 using Niantic.ARDK.Networking.MultipeerNetworkingEventArgs;
 using Niantic.ARDK.Utilities.BinarySerialization;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class NetworkManager : MonoBehaviour
 {
-    [SerializeField] private GameMaster gameMaster;
-    [SerializeField] private ScreenViewer screenViewer;
-    
     public bool IsHost { get; private set; }
+
+    public readonly UnityEvent OnNetworkedConnectedEvent = new UnityEvent();
+    public readonly UnityEvent<PeerDataReceivedArgs> OnPeerDataReceivedEvent = new UnityEvent<PeerDataReceivedArgs>();
 
     private IARNetworking arNetworking;
     private IMultipeerNetworking multipeerNetworking;
@@ -79,29 +80,7 @@ public class NetworkManager : MonoBehaviour
     
     private void OnPeerDataReceived(PeerDataReceivedArgs args)
     {
-        if (args.Tag == 0)
-        {
-            using var stream = new MemoryStream(args.CopyData());
-            var str = (string)GlobalSerializer.Deserialize(stream);
-            Debug.Log(str);
-        }
-
-        if (args.Tag == 1)
-        {
-            using var stream = new MemoryStream(args.CopyData());
-            var str = (string)GlobalSerializer.Deserialize(stream);
-            gameMaster.ReadyToStart();
-            screenViewer.OnSwitchMeshButtonClicked();
-            Debug.Log(str);
-        }
-
-        if (args.Tag == 2)
-        {
-            using var stream = new MemoryStream(args.CopyData());
-            var index = (int)GlobalSerializer.Deserialize(stream);
-            Debug.Log($"index = {index}");
-            gameMaster.SetQuestion(index);
-        }
+        OnPeerDataReceivedEvent.Invoke(args);
     }
 
     private void OnSessionRan(ARSessionRanArgs args)
@@ -113,10 +92,7 @@ public class NetworkManager : MonoBehaviour
     {
         Debug.Log($"START OnNetworkedConnected: peerID {args.Self}, isHost: {args.IsHost}");
         IsHost = args.IsHost;
-        if (!IsHost)　// ARMesh がなんらかの不具合で共有できないことから、ホストが回答者で、参加者が質問者という歪な形をとっている
-        {
-            screenViewer.ShowAdminUI();
-        }
+        OnNetworkedConnectedEvent?.Invoke();
     }
 
     private void OnPeerStateReceived(PeerStateReceivedArgs args)
